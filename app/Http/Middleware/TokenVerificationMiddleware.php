@@ -20,7 +20,7 @@ class TokenVerificationMiddleware
         $result = JWTToken::VerifyToken($token);
        
         if($result=="unauthorized"){
-            return redirect('/');
+            return response()->json(['message'=>'access denied!'],401);
         }else{
             $request->headers->set('Accept','application/json');
             $request->headers->set('email',$result->userEmail);

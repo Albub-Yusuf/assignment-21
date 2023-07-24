@@ -42,16 +42,16 @@ class UserController extends Controller
         $hasUser = User::where('email',$request->input('email'))
                         ->where('password',$request->input('password'))
                         ->select('id')->first();
-        //return $hasUser->id;
+       
         
         if($hasUser !==null){
             $token = JWTToken::CreateToken($request->input('email'),$hasUser->id);
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'User Login Successful!'
-            ],200);
+            ],200)->cookie('token',$token,60*60*24);
 
-            return Redirect::to('/dashboard')->withCookie(cookie('token', $token, 60 * 60 * 24));            
+                  
           
             
         }else{
@@ -72,12 +72,16 @@ class UserController extends Controller
 
     function dashboard(Request $request){
 
-      //  echo "inside dashboard controller";
 
       $email = $request->header('email');
       $uid = $request->header('id');
 
-      return ['email'=>$email,'uid'=>$uid];
+      $name = User::where('id',$uid)->select('firstName','lastName')->first();
+
+      return response()->json([
+        'status'=>'success',
+        'message'=>'welcome '.$name->firstName." ".$name->lastName
+      ]);
 
 
     }

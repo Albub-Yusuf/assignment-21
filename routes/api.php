@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,8 @@ Route::post('user-login',[UserController::class,'userLogin']);
 Route::get('user-logout',[UserController::class,'userLogout']);
 
 Route::get('/dashboard',[UserController::class,'dashboard'])->middleware(TokenVerificationMiddleware::class);
+
+Route::post('add-task',[TaskController::class,'addTask'])->middleware(TokenVerificationMiddleware::class);
+
 
 
