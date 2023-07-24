@@ -6,7 +6,7 @@ use App\Helper\JWTToken;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -19,7 +19,7 @@ class UserController extends Controller
                 'lastName'=>$request->input('lastName'),
                 'phone'=>$request->input('phone'),
                 'email'=>$request->input('email'),
-                'password'=>$request->input('password')
+                'password'=>Hash::make($request->input('password'))
             ]);
 
             return response()->json([
@@ -39,8 +39,10 @@ class UserController extends Controller
     }
 
     function userLogin(Request $request){
+        $userPassword = User::where('email',$request->input('email'))->select('password')->get();
+        
         $hasUser = User::where('email',$request->input('email'))
-                        ->where('password',$request->input('password'))
+                        ->where('password',Hash::check($request->input('password'),$userPassword))
                         ->select('id')->first();
        
         
@@ -72,15 +74,13 @@ class UserController extends Controller
 
     function dashboard(Request $request){
 
+      $userId = $request->header('id');
 
-      $email = $request->header('email');
-      $uid = $request->header('id');
-
-      $name = User::where('id',$uid)->select('firstName','lastName')->first();
+      $name = User::where('id',$userId)->select('firstName','lastName')->first();
 
       return response()->json([
         'status'=>'success',
-        'message'=>'welcome '.$name->firstName." ".$name->lastName
+        'message'=>'welcome to myTodoApp Dashboard - '.$name->firstName." ".$name->lastName
       ]);
 
 

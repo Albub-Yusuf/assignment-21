@@ -24,9 +24,13 @@ Route::get('/', function () {
 Route::post('user-registration',[UserController::class,'userRegistration']);
 Route::post('user-login',[UserController::class,'userLogin']);
 Route::get('user-logout',[UserController::class,'userLogout']);
-
 Route::get('/dashboard',[UserController::class,'dashboard'])->middleware(TokenVerificationMiddleware::class);
 
 // Todo Routes
 
 Route::post('add-task',[TaskController::class,'addTask'])->middleware(TokenVerificationMiddleware::class);
+Route::get('/tasks',[TaskController::class,'taskList'])->middleware(TokenVerificationMiddleware::class);
+Route::get('/show-task/{id}',[TaskController::class,'showSingleTask'])->middleware(TokenVerificationMiddleware::class);
+Route::post('/update-task/{id}',[TaskController::class,'updateTask'])->middleware(TokenVerificationMiddleware::class);
+Route::post('/delete-task/{id}',[TaskController::class,'deleteTask'])->middleware(TokenVerificationMiddleware::class);
+

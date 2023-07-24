@@ -10,7 +10,7 @@ class TaskController extends Controller
 {
     function addTask(Request $request){
 
-        $email = $request->header('email');
+        
         $userId = $request->header('id');
 
         try{
@@ -31,17 +31,60 @@ class TaskController extends Controller
     }
 
     function taskList(Request $request){
-        $email = $request->header('email');
+        
         $userId = $request->header('id');
+
+        $tasks = Task::where('user_id',$userId)->get();
+        return $tasks;
     }
 
-    function updateTask(Request $request){
-        $email = $request->header('email');
+    function showSingleTask(Request $request,$taskId){
+      
         $userId = $request->header('id');
+
+        $task = Task::where('user_id',$userId)->where('id',$taskId)->get();
+        return $task;
+     
     }
 
-    function deleteTask(Request $request){
-        $email = $request->header('email');
+    function updateTask(Request $request,$taskId){
+        
         $userId = $request->header('id');
+
+       try{
+        $result =  Task::where('user_id',$userId)->where('id',$taskId)
+             ->update([
+                'task'=>$request->input('task'),
+                'status'=>$request->input('status')
+                ]);
+            
+       if($result){
+        return response()->json(['status'=>'success','message'=>'Task updated successfully!'],200);
+       }else{
+        return response()->json(['message'=>'This task is not associated with current user!'],401);
+       }
+
+       }catch(Exception $e){
+            return response()->json(['status'=>'failed','message'=>'Something went wrong!']);
+       }
+
+    }
+
+    function deleteTask(Request $request,$taskId){
+       
+        $userId = $request->header('id');
+
+        try{
+            $result =  Task::where('user_id',$userId)->where('id',$taskId)->delete();
+                
+           if($result){
+            return response()->json(['status'=>'success','message'=>'Task deleted successfully!'],200);
+           }else{
+            return response()->json(['message'=>'This task is not associated with current user!'],401);
+           }
+    
+           }catch(Exception $e){
+                return response()->json(['status'=>'failed','message'=>'Something went wrong!']);
+           }
     }
 }
