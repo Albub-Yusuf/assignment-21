@@ -3,6 +3,8 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\TokenVerificationMiddleware;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +26,7 @@ Route::post('user-login',[UserController::class,'userLogin']);
 
 
 Route::get('user-logout',[UserController::class,'userLogout']);
+
+Route::get('/dashboard',[UserController::class,'dashboard'])->middleware(TokenVerificationMiddleware::class);
+
+
