@@ -18,9 +18,7 @@ use App\Http\Middleware\TokenVerificationMiddleware;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 Route::post('user-registration',[UserController::class,'userRegistration']);
 
